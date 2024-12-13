@@ -27,7 +27,7 @@ public class PagamentoTest {
 
         Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
         assertEquals("Pagamento com atraso.", exception.getMessage());
-        
+
 
     }
 
@@ -82,11 +82,11 @@ public class PagamentoTest {
     @Test
     public void testaPagamentoTransferenciaValorAbaixoDoLimiteBoleto() {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
-        Conta conta = new Conta("1", new Date(), 4999, fatura);
+        Conta conta = new Conta("1", new Date(), 0.0, fatura);
         Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
 
         Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
-        assertEquals("O valor do pagamento deve ser maior que 0.", exception.getMessage());
+        assertEquals("O valor do pagamento deve ser maior que 0.0", exception.getMessage());
     }
 
     @Test

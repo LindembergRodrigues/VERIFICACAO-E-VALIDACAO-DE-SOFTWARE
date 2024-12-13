@@ -18,8 +18,8 @@ public class Pagamento {
 
 
     public void validaPagamento(){
-        if (this.valorPago <= 0) {
-            throw new IllegalArgumentException("O valor do pagamento deve ser maior que 0.");
+        if (this.valorPago < 0.01) {
+            throw new IllegalArgumentException("O valor do pagamento deve ser maior que 0.0");
         }
         
         if (this.getDataPagamento().after(conta.getData())) {
@@ -28,6 +28,10 @@ public class Pagamento {
 
         if (!this.tipoPagamento.equals("CARTAO_CREDITO") && !this.tipoPagamento.equals("BOLETO") && !this.tipoPagamento.equals("TRANSFERENCIA_BANCARIA")) {
             throw new IllegalArgumentException("Tipo de pagamento inválido.");
+        }
+
+        if (this.tipoPagamento.equals("BOLETO") && this.valorPago > 5000) {
+            throw new IllegalArgumentException("O valor do pagamento deve ser menor ou igual a 5000");
         }
 
 
