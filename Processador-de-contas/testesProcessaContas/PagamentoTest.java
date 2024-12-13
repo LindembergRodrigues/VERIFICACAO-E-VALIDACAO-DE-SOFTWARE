@@ -139,13 +139,19 @@ public class PagamentoTest {
 
     @Test
     public void testePagamentoCartaoCredito14DiasAntesDataFatura() {
+        //Pagamento não deve ser contablizado
+
     }
 
     @Test
     public void testePagamentoCartaoCredito16DiasAntesDataFatura() {
+        //Pagamento deve ser contabilizado
+
     }
 
     @Test
     public void testePagamentoTransferenciaBancariaDepoisDataFatura() {
+        //Pagamento não deve ser contabilizado
+        
     }
 }

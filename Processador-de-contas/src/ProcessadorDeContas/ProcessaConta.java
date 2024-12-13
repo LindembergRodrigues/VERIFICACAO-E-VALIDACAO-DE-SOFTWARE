@@ -16,6 +16,7 @@ public class ProcessaConta {
     public void criaPagamento(Conta conta, Date dataPagamento, String tipoPagamento) {
         Pagamento pagamento = new Pagamento(conta, dataPagamento, tipoPagamento);
         pagamento.validaPagamento();
+        this.validaPagamento(pagamento, conta);
         pagamentos.add(pagamento);
 
     }
@@ -34,4 +35,15 @@ public class ProcessaConta {
 
     }
 
+    public void validaPagamento(Pagamento pagamento, Conta conta) {
+        if (pagamento.getTipoPagamento().equals("TRANSFERENCIA_BANCARIA")) {
+            if (pagamento.getDataPagamento().after(fatura.getData())) {
+
+            } else{
+                pagamentos.add(pagamento);
+            }
+
+        } else if ( pagamento.getTipoPagamento().equals("CARTAO_CREDITO") && conta.getData().before(fatura.getData())) {
+        }
+    }
 }
