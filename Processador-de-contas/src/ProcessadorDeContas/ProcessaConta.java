@@ -14,8 +14,15 @@ public class ProcessaConta {
     }
 
     public Double getValorTotalPagamentos() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getValorTotalPagamentos'");
+
+        double valorTotal = 0;
+
+        for (Conta conta : contas) {
+            valorTotal += conta.getValorPago();
+        }
+
+        return valorTotal;
+
     }
 
 
