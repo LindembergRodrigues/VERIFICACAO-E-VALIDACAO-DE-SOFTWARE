@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Pagamento {
@@ -22,8 +21,8 @@ public class Pagamento {
             throw new IllegalArgumentException("O valor do pagamento deve ser maior que 0.0");
         }
         
-        if (this.getDataPagamento().after(conta.getData())) {
-            throw new IllegalArgumentException("Pagamento com atraso.");
+        if (this.getDataPagamento().after(conta.getData()) && this.tipoPagamento.equals("BOLETO")) {
+            this.valorPago = this.valorPago * 1.1;
         }
 
         if (!this.tipoPagamento.equals("CARTAO_CREDITO") && !this.tipoPagamento.equals("BOLETO") && !this.tipoPagamento.equals("TRANSFERENCIA_BANCARIA")) {
@@ -33,7 +32,6 @@ public class Pagamento {
         if (this.tipoPagamento.equals("BOLETO") && this.valorPago > 5000) {
             throw new IllegalArgumentException("O valor do pagamento deve ser menor ou igual a 5000");
         }
-
 
     }
 

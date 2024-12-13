@@ -15,23 +15,21 @@ public class Fatura {
         this.valorTotal = valorTotal;
         this.nomeCliente = nomeCliente;
         this.id = id;
-        this.status = "PENDENDTE";
+        this.status = "PENDENTE";
         contas = new ArrayList<>();
         
     }
-
-    
 
     public void adicionaConta(Conta conta) {
         contas.add(conta);
     }
 
     public ArrayList<Conta> getContas() {
-        return contas;
+        return this.contas;
     }
 
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
     public void setStatus(String status) {
@@ -39,15 +37,15 @@ public class Fatura {
     }
 
     public Date getData() {
-        return dataFatura;
+        return this.dataFatura;
     }
 
     public double getValorTotal() {
-        return valorTotal;
+        return this.valorTotal;
     }
 
     public String getNomeCliente() {
-        return nomeCliente;
+        return this.nomeCliente;
     }
 
     public void setData(Date dataFatura) {
@@ -63,7 +61,7 @@ public class Fatura {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(String id) {

@@ -22,11 +22,10 @@ public class PagamentoTest {
     @Test
     public void testaPagamentoBoletoComAtraso() {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
-        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        Conta conta = new Conta("1", new Date(), 110.0, fatura);
         Pagamento pagamento = new Pagamento(conta, addDays(new Date(), 1), "BOLETO");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
-        assertEquals("Pagamento com atraso.", exception.getMessage());
+        assertEquals(110, pagamento.getValorPago());
 
 
     }
@@ -47,7 +46,7 @@ public class PagamentoTest {
         Pagamento pagamento = new Pagamento(conta, new Date(), "TRANSFERENCIA_BANCARIA");
 
         Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
-        assertEquals("O valor do pagamento deve ser maior que 0.", exception.getMessage());
+        assertEquals("O valor do pagamento deve ser maior que 0.0", exception.getMessage());
     }
 
     @Test
@@ -99,28 +98,27 @@ public class PagamentoTest {
         Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
         Pagamento pagamento2 = new Pagamento(conta2, new Date(), "CARTAO_CREDITO");
 
-        ProcessaConta processaConta = new ProcessaConta(fatura.getContas());
+        ProcessaConta processaConta = new ProcessaConta(fatura);
         processaConta.criaPagamento(conta2, new Date(), "CARTAO_CREDITO");
         processaConta.criaPagamento(conta, new Date(), "BOLETO");
 
-        assertEquals(fatura.getValorTotal(), processaConta.getValorTotalPagamentos());
+        assertEquals(fatura.getValorTotal(), processaConta.calculaValorTotalPagamentos());
     }
 
     @Test
-    public void testaStatusFatura() {
+    public void testaStatusFaturaPaga() {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 50, fatura);
-        Conta conta2 = new Conta("1", new Date(), 50, fatura);
+        Conta conta2 = new Conta("2", new Date(), 50, fatura);
         fatura.adicionaConta(conta);
         fatura.adicionaConta(conta2);
-        Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
-        Pagamento pagamento2 = new Pagamento(conta2, new Date(), "CARTAO_CREDITO");
 
-        ProcessaConta processaConta = new ProcessaConta(fatura.getContas());
+        ProcessaConta processaConta = new ProcessaConta(fatura);
         processaConta.criaPagamento(conta2, new Date(), "CARTAO_CREDITO");
         processaConta.criaPagamento(conta, new Date(), "BOLETO");
-
+        processaConta.calculaValorTotalPagamentos();
         assertEquals("PAGA", fatura.getStatus());
+        
     }
 
     @Test
@@ -130,13 +128,24 @@ public class PagamentoTest {
         Conta conta2 = new Conta("1", new Date(), 50, fatura);
         fatura.adicionaConta(conta);
         fatura.adicionaConta(conta2);
-        Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
-        Pagamento pagamento2 = new Pagamento(conta2, addDays(new Date(), 1), "CARTAO_CREDITO");
-
-        ProcessaConta processaConta = new ProcessaConta(fatura.getContas());
+    
+        ProcessaConta processaConta = new ProcessaConta(fatura);
         processaConta.criaPagamento(conta2, addDays(new Date(), 1), "CARTAO_CREDITO");
         processaConta.criaPagamento(conta, new Date(), "BOLETO");
 
         assertEquals("PENDENTE", fatura.getStatus());
+    }
+
+
+    @Test
+    public void testePagamentoCartaoCredito14DiasAntesDataFatura() {
+    }
+
+    @Test
+    public void testePagamentoCartaoCredito16DiasAntesDataFatura() {
+    }
+
+    @Test
+    public void testePagamentoTransferenciaBancariaDepoisDataFatura() {
     }
 }
