@@ -1,20 +1,21 @@
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.ArrayList;
 
 public class Fatura {
 
-    private LocalDate dataFatura;
+    private Date dataFatura;
     private double valorTotal;
     private String nomeCliente;
     private String id;
     private String status;
     private ArrayList<Conta> contas;
 
-    public Fatura(LocalDate dataFatura, double valorTotal, String nomeCliente, String id, String status){ {
+    public Fatura(Date dataFatura, double valorTotal, String nomeCliente, String id) {
         this.dataFatura = dataFatura;
         this.valorTotal = valorTotal;
         this.nomeCliente = nomeCliente;
         this.id = id;
-        this.status = status;
+        this.status = "PENDENDTE";
         contas = new ArrayList<>();
         
     }
@@ -37,7 +38,7 @@ public class Fatura {
         this.status = status;
     }
 
-    public LocalDate getData() {
+    public Date getData() {
         return dataFatura;
     }
 
@@ -49,7 +50,7 @@ public class Fatura {
         return nomeCliente;
     }
 
-    public void setData(LocalDate dataFatura) {
+    public void setData(Date dataFatura) {
         this.dataFatura = dataFatura;
     }
 
@@ -69,7 +70,5 @@ public class Fatura {
         this.id = id;
     }
 
-
-
 }
-}
+

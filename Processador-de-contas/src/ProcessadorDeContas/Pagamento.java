@@ -1,16 +1,19 @@
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Pagamento {
     private double valorPago;
-    private LocalDate dataPagamento;
+    private Date dataPagamento;
     private String tipoPagamento;
     private String idConta;
+    private Conta conta;
 
-    public Pagamento(Conta conta, LocalDate dataPagamento, String tipoPagamento) {
+    public Pagamento(Conta conta, Date dataPagamento, String tipoPagamento) {
         this.valorPago = conta.getValorPago();
         this.dataPagamento = dataPagamento;
         this.tipoPagamento = tipoPagamento;
         this.idConta = conta.getIdFatura();
+        this.conta = conta;
     }
 
 
@@ -18,6 +21,11 @@ public class Pagamento {
         if (this.valorPago <= 0) {
             throw new IllegalArgumentException("O valor do pagamento deve ser maior que 0.");
         }
+        
+        if (this.getDataPagamento().after(conta.getData())) {
+            throw new IllegalArgumentException("Pagamento com atraso.");
+        }
+
 
     }
 
@@ -25,7 +33,7 @@ public class Pagamento {
         return valorPago;
     }
     
-    public LocalDate getDataPagamento() {
+    public Date getDataPagamento() {
         return dataPagamento;
     }
 
@@ -37,7 +45,7 @@ public class Pagamento {
         this.valorPago = valorPago;
     }
 
-    public void setDataPagamento(LocalDate dataPagamento) {
+    public void setDataPagamento(Date dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 

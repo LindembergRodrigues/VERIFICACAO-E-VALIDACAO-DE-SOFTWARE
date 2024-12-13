@@ -1,14 +1,14 @@
-import java.time.LocalDate;
+import java.util.Date;
 
 class Conta {
     private String codigoConta;
-    private LocalDate dataPagamento;
+    private Date data;
     private double valorPago;
     private String idFatura;
 
-    public Conta(String codigoConta, LocalDate dataPagamento, double valorPago, Fatura fatura) {
+    public Conta(String codigoConta, Date data, double valorPago, Fatura fatura) {
         this.codigoConta = codigoConta;
-        this.dataPagamento = dataPagamento;
+        this.data = data;
         this.valorPago = valorPago;
         this.idFatura = fatura.getId();
     }
@@ -17,8 +17,8 @@ class Conta {
         return codigoConta;
     }
 
-    public LocalDate getDataPagamento() {
-        return dataPagamento;
+    public Date getData() {
+        return data;
     }
 
     public double getValorPago() {
