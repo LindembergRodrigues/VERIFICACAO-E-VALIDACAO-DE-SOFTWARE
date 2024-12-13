@@ -14,36 +14,42 @@ public class ProcessaConta {
     }
 
     public void criaPagamento(Conta conta, Date dataPagamento, String tipoPagamento) {
+        if (conta == null || dataPagamento == null || tipoPagamento == null) {
+            throw new IllegalArgumentException("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.");
+        }
+
         Pagamento pagamento = new Pagamento(conta, dataPagamento, tipoPagamento);
         pagamento.validaPagamento();
-        this.validaPagamento(pagamento, conta);
-        pagamentos.add(pagamento);
 
+        if ("TRANSFERENCIA_BANCARIA".equals(tipoPagamento) || "BOLETO".equals(tipoPagamento)) {
+            if (validaPagamentoTransferenciaBancariaBoleto(pagamento)) {
+                pagamentos.add(pagamento);
+                calculaValorTotalPagamentos();
+            }
+        } else {
+            long diffMillis = fatura.getData().getTime() - conta.getData().getTime();
+            long diffDias = diffMillis / (1000 * 60 * 60 * 24);
+            if (diffDias <= 16) {
+                calculaValorTotalPagamentos();
+                pagamentos.add(pagamento);
+            }
+        }
     }
 
     public double calculaValorTotalPagamentos() {
+        double valorTotal = pagamentos.stream()
+                                      .mapToDouble(Pagamento::getValorPago)
+                                      .sum();
 
-        double valorTotal = 0;
-        for (Pagamento pagamento : pagamentos) {
-            valorTotal += pagamento.getValorPago();
-        }
         if (valorTotal >= valorFatura) {
-            this.fatura.setStatus("PAGA");
+            fatura.setStatus("PAGA");
         }
 
         return valorTotal;
-
     }
 
-    public void validaPagamento(Pagamento pagamento, Conta conta) {
-        if (pagamento.getTipoPagamento().equals("TRANSFERENCIA_BANCARIA")) {
-            if (pagamento.getDataPagamento().after(fatura.getData())) {
-
-            } else{
-                pagamentos.add(pagamento);
-            }
-
-        } else if ( pagamento.getTipoPagamento().equals("CARTAO_CREDITO") && conta.getData().before(fatura.getData())) {
-        }
+    private boolean validaPagamentoTransferenciaBancariaBoleto(Pagamento pagamento) {
+        return pagamento.getDataPagamento().before(fatura.getData()) || 
+               pagamento.getDataPagamento().equals(fatura.getData());
     }
 }

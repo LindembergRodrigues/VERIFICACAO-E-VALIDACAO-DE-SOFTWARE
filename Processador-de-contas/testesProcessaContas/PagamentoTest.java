@@ -26,8 +26,6 @@ public class PagamentoTest {
         Pagamento pagamento = new Pagamento(conta, addDays(new Date(), 1), "BOLETO");
 
         assertEquals(110, pagamento.getValorPago());
-
-
     }
 
     @Test
@@ -36,7 +34,7 @@ public class PagamentoTest {
         Conta conta = new Conta("1", new Date(), 100.0, fatura);
         Pagamento pagamento = new Pagamento(conta, new Date(), "CARTAO_CREDITO");
 
-        assertDoesNotThrow(pagamento::validaPagamento);
+        assertEquals("PAGO", fatura.getStatus());
     }
 
     @Test
@@ -137,21 +135,61 @@ public class PagamentoTest {
     }
 
 
+
+    @Test
+    public void testaPagamentoTransferenciaAtrasada(){
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        Pagamento pagamento = new Pagamento(conta, addDays(new Date(), 1), "TRANSFERENCIA_BANCARIA");
+
+        assertEquals("PENDENTE", fatura.getStatus());
+    }
+
+
     @Test
     public void testePagamentoCartaoCredito14DiasAntesDataFatura() {
-        //Pagamento não deve ser contablizado
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100, fatura);
+        fatura.adicionaConta(conta);
+        
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
 
+        assertEquals("PENDENTE", fatura.getStatus());
     }
 
     @Test
     public void testePagamentoCartaoCredito16DiasAntesDataFatura() {
-        //Pagamento deve ser contabilizado
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100, fatura);
+        fatura.adicionaConta(conta);
+        
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
+
+        assertEquals("PAGA", fatura.getStatus());
 
     }
 
     @Test
+    public void testePagamentoCartao(){
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100, fatura);
+        fatura.adicionaConta(conta);
+        
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
+
+        assertEquals("PAGO", fatura.getStatus());
+        assertEquals(100, processaConta.calculaValorTotalPagamentos());
+    }
+
+
+    @Test
     public void testePagamentoTransferenciaBancariaDepoisDataFatura() {
         //Pagamento não deve ser contabilizado
-        
+
     }
+
+
 }
