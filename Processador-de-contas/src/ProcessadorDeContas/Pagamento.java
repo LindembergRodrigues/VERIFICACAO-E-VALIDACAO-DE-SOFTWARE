@@ -26,6 +26,10 @@ public class Pagamento {
             throw new IllegalArgumentException("Pagamento com atraso.");
         }
 
+        if (!this.tipoPagamento.equals("CARTAO_CREDITO") && !this.tipoPagamento.equals("BOLETO") && !this.tipoPagamento.equals("TRANSFERENCIA_BANCARIA")) {
+            throw new IllegalArgumentException("Tipo de pagamento inválido.");
+        }
+
 
     }
 
