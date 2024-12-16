@@ -7,12 +7,14 @@ public class Ingresso {
     private final Tipo tipo;
     private boolean status;
     private double preco;
+    private double precoOriginal;
 
     public Ingresso(Tipo tipo, double preco) {
         this.id = contador++;
         this.tipo = tipo;
         this.status = false;
         this.preco = preco;
+        this.precoOriginal = preco;
     }
 
     public int getId() {
@@ -39,5 +41,9 @@ public class Ingresso {
         if (tipo != Tipo.MEIA_ENTRADA && (desconto >= 0.00 || desconto <= 0.25 )) { // para teste individual
             this.preco -= this.preco * desconto;
         }
+    }
+
+    public double getPrecoOriginal() {
+        return precoOriginal;
     }
 }

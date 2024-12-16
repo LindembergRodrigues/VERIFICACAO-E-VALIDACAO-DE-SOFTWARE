@@ -1,5 +1,7 @@
-package SistemaDeIngressos;
+package TestSistemaDeIngressos;
 
+import SistemaDeIngressos.Ingresso;
+import SistemaDeIngressos.Tipo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
