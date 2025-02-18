@@ -1,11 +1,12 @@
 package TestProcessaContas;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+//import static org.junit.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
+
 
 import ProcessadorDeContas.Conta;
 import ProcessadorDeContas.Fatura;
@@ -28,7 +29,7 @@ public class ProcessaPagamentoTest {
     }
     
     
-     @Test
+    @Test
     public void testaValorFinalProcessamentoPagamento() {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 50, fatura);
@@ -220,13 +221,13 @@ public class ProcessaPagamentoTest {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 100, fatura);
         fatura.adicionaConta(conta);
-       
-        try {
-            ProcessaConta processaConta = new ProcessaConta(fatura);
-            processaConta.criaPagamento(null, addDays(new Date(), 1), "TRANSFERENCIA_BANCARIA");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", e.getMessage());
-        }
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                processaConta.criaPagamento(null, addDays(new Date(), 1), "TRANSFERENCIA_BANCARIA")
+        );
+
+        assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", exception.getMessage());
     }
 
     @Test
@@ -234,13 +235,13 @@ public class ProcessaPagamentoTest {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 100, fatura);
         fatura.adicionaConta(conta);
-       
-        try {
-            ProcessaConta processaConta = new ProcessaConta(fatura);
-            processaConta.criaPagamento(conta, null, "BOLETO");
-        } catch (IllegalArgumentException e) {
-            assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", e.getMessage());
-        }
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                processaConta.criaPagamento(conta, null, "BOLETO")
+        );
+
+        assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", exception.getMessage());
     }
 
 
@@ -249,13 +250,12 @@ public class ProcessaPagamentoTest {
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 100, fatura);
         fatura.adicionaConta(conta);
-       
-        try {
-            ProcessaConta processaConta = new ProcessaConta(fatura);
-            processaConta.criaPagamento(conta, null, null);
-        } catch (IllegalArgumentException e) {
-            assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", e.getMessage());
-        }
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                processaConta.criaPagamento(conta, null, null));
+
+        assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", exception.getMessage());
     }
 
 
@@ -274,14 +274,78 @@ public class ProcessaPagamentoTest {
     public void CT9(){
         Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 0.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
 
-        try {
-            ProcessaConta processaConta = new ProcessaConta(fatura);
-            processaConta.criaPagamento(conta, addDays(new Date(), 1), "TRANSFERENCIA_BANCARIA");
-        } catch (IllegalArgumentException e) {
-            assertEquals("O valor do pagamento deve ser maior que 0.0", e.getMessage());
-        }
-       
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                processaConta.criaPagamento(conta, addDays(new Date(), 1), "TRANSFERENCIA_BANCARIA"));
+
+        assertEquals("O valor do pagamento deve ser maior que 0.0", exception.getMessage());
+
+    }
+
+// Testes utilizando tabela de decisão
+
+
+@Test
+public void CT10() {
+    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+    ProcessaConta processaConta = new ProcessaConta(fatura);
+
+    IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> 
+        processaConta.criaPagamento(null, null, null)
+    );
+
+    assertEquals("Os parâmetros conta, dataPagamento e tipoPagamento não podem ser nulos.", exception.getMessage());
+}
+
+    @Test
+    public void CT11(){
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "TRANSFERENCIA_BANCARIA");
+        assertEquals("PAGA", fatura.getStatus());
+    }
+
+    @Test
+    public void CT12(){
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 50.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
+
+        assertEquals("PENDENTE", fatura.getStatus());
+
+    }
+
+    @Test
+    public void CT13(){
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+
+        processaConta.criaPagamento(conta, new Date(), "BOLETO");
+        assertEquals("PAGA", fatura.getStatus());
+    }
+
+    @Test
+    public void CT14(){
+        Fatura fatura = new Fatura(addDays(new Date(), 15), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
+        assertEquals("PAGA", fatura.getStatus());
+    }
+    @Test
+    public void CT15(){
+        Fatura fatura = new Fatura(addDays(new Date(), 10), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
+        assertEquals("PENDENTE", fatura.getStatus());
     }
 
 }
+
