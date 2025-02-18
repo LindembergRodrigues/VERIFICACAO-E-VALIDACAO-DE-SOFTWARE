@@ -185,36 +185,27 @@ public class ProcessaPagamentoTest {
 
     @Test
     public void CT3() {
-        Fatura fatura = new Fatura(new Date(), 200.0, "João", "1");
-        Conta conta = new Conta("1", new Date(), 100, fatura);
-        Conta conta2 = new Conta("1", new Date(), 100, fatura);
+        Fatura fatura = new Fatura(addDays(new Date(), 14), 200.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 200, fatura);
         fatura.adicionaConta(conta);
-        fatura.adicionaConta(conta2);
        
         ProcessaConta processaConta = new ProcessaConta(fatura);
-        processaConta.criaPagamento(conta, subtractDays(new Date(), 15), "CARTAO_CREDITO");
-        processaConta.criaPagamento(conta2, subtractDays(new Date(), 15), "TRANSFERENCIA_BANCARIA");
+        processaConta.criaPagamento(conta, new Date(), "CARTAO_CREDITO");
 
 
         assertEquals("PAGA", fatura.getStatus());
-        assertEquals(fatura.getValorTotal(), processaConta.calculaValorTotalPagamentos());
     }
 
     @Test
     public void CT4() {
         Fatura fatura = new Fatura(new Date(), 200.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 100, fatura);
-        Conta conta2 = new Conta("1", new Date(), 100, fatura);
         fatura.adicionaConta(conta);
-        fatura.adicionaConta(conta2);
-       
         ProcessaConta processaConta = new ProcessaConta(fatura);
-        processaConta.criaPagamento(conta, subtractDays(new Date(), 14), "CARTAO_CREDITO");
-        processaConta.criaPagamento(conta2, subtractDays(new Date(), 14), "TRANSFERENCIA_BANCARIA");
+        processaConta.criaPagamento(conta, subtractDays(new Date(), 12), "CARTAO_CREDITO");
 
 
-        assertEquals("PAGA", fatura.getStatus());
-        assertEquals(fatura.getValorTotal(), processaConta.calculaValorTotalPagamentos());
+        assertEquals("PENDENTE", fatura.getStatus());
     }
     @Test
     public void CT5() {

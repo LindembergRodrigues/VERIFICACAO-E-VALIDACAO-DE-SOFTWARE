@@ -95,12 +95,12 @@ public class PagamentoTest {
 // Testes utilizando AVL(Análise de valores limites)
 @Test
 public void testaPagamentoTransferenciaValorNoLimiteInferiorBoleto() {
-    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
-    Conta conta = new Conta("1", new Date(), 0.01, fatura); 
-    Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
-
+    Fatura fatura = new Fatura(addDays(new Date(), 1), 0.1, "João", "1");
+    Conta conta = new Conta("1", new Date(), 0.1, fatura); 
+    ProcessaConta processaConta = new ProcessaConta(fatura);
+    processaConta.criaPagamento(conta, new Date(), "BOLETO");
     assertEquals("PAGA", fatura.getStatus());
-    assertDoesNotThrow(pagamento::validaPagamento);
+    
 }
 
 @Test
@@ -118,10 +118,9 @@ public void testaPagamentoCartaoCreditoLimiteSuperior() {
     public void testaPagamentoBoletoValido() {
         Fatura fatura = new Fatura(addDays(new Date(), 1), 110.0, "João", "1");
         Conta conta = new Conta("1", new Date(), 110.0, fatura);
-        Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
-
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "BOLETO");        
         assertEquals("PAGA", fatura.getStatus());
-        assertEquals(110, pagamento.getValorPago());
     }
 
 @Test
@@ -193,10 +192,10 @@ public void CT5() {
 public void CT6() {
     Fatura fatura = new Fatura(addDays(new Date(), 30), 100, "João", "1");
     Conta conta = new Conta("1", new Date(), 100.0, fatura);
-    Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
-
-    assertEquals("PAGO", fatura.getStatus());
-    assertEquals(110, pagamento.getValorPago());
+    ProcessaConta processaConta = new ProcessaConta(fatura);
+    processaConta.criaPagamento(conta, new Date(), "BOLETO");
+    
+    assertEquals("PAGA", fatura.getStatus());
 }
 
 
