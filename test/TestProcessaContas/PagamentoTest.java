@@ -93,7 +93,6 @@ public class PagamentoTest {
    
 
 // Testes utilizando AVL(Análise de valores limites)
-
 @Test
 public void testaPagamentoTransferenciaValorNoLimiteInferiorBoleto() {
     Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
@@ -211,6 +210,95 @@ public void CT6() {
         assertEquals("Tipo de pagamento inválido.", exception.getMessage());
     }
 
+
+// Testes utilizando tabela de decisão
+
+@Test
+public void CT11() {
+    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+    Conta conta = new Conta("1", addDays(new Date(), 1), 0.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
+    assertEquals("O valor do pagamento deve ser maior que 0.0", exception.getMessage());
+
+
+}
+
+@Test
+public void CT14() {
+    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+    Conta conta = new Conta("1", new Date(), 0.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, new Date(), "PIX");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
+    assertEquals("O valor do pagamento deve ser maior que 0.0", exception.getMessage());
+
+
+}
+
+
+@Test
+public void CT15() {
+    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+    Conta conta = new Conta("1", addDays(new Date(), 1), 0.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, new Date(), "CARTAO_CREDITO");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
+    assertEquals("O valor do pagamento deve ser maior que 0.0", exception.getMessage());
+}
+
+@Test
+public void CT17() {
+    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+    Conta conta = new Conta("1", addDays(new Date(), 1), 5001.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
+    assertEquals("O valor do pagamento deve ser menor ou igual a 5000", exception.getMessage());
+}
+
+
+@Test
+public void CT19() {
+    Fatura fatura = new Fatura(addDays(new Date(), 2), 100.0, "João", "1");
+    Conta conta = new Conta("1", new Date(), 110.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, addDays(new Date(), 1), "BOLETO");
+
+    assertEquals(110, pagamento.getValorPago());
+}
+
+@Test
+public void CT21() {
+    Fatura fatura = new Fatura(addDays(new Date(), 2), 100.0, "João", "1");
+    Conta conta = new Conta("1", new Date(), 5001.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, new Date(), "BOLETO");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
+    assertEquals("O valor do pagamento deve ser menor ou igual a 5000", exception.getMessage());
+
+}
+
+@Test
+public void CT22() {
+    Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+    Conta conta = new Conta("1", new Date(), 5001.0, fatura);
+    Pagamento pagamento = new Pagamento(conta, new Date(), "PIX");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, pagamento::validaPagamento);
+    assertEquals("Tipo de pagamento inválido.", exception.getMessage());
+
+}
+
+@Test
+    public void CT23() {
+        Fatura fatura = new Fatura(new Date(), 100.0, "João", "1");
+        Conta conta = new Conta("1", new Date(), 100.0, fatura);
+        ProcessaConta processaConta = new ProcessaConta(fatura);
+        processaConta.criaPagamento(conta, new Date(), "TRANSFERENCIA_BANCARIA");
+        assertEquals("PAGA", fatura.getStatus());
+
+    }
 
 }
 
