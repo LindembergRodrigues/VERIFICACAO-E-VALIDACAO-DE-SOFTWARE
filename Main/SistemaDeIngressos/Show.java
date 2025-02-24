@@ -6,6 +6,11 @@ import java.util.List;
 
 public class Show {
     private final String data;
+
+    public String getArtista() {
+        return artista;
+    }
+
     private final String artista;
     private final double cache;
     private final double despesasInfra;
