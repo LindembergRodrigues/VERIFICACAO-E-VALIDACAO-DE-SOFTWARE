@@ -59,9 +59,9 @@ public class Show {
         if (receitaLiquida > 0) {
             statusFinanceiro = "LUCRO";
         } else if (receitaLiquida == 0) {
-            statusFinanceiro = "ESTÁVEL";
+            statusFinanceiro = "ESTAVEL";
         } else {
-            statusFinanceiro = "PREJUÍZO";
+            statusFinanceiro = "PREJUIZO";
         }
 
         System.out.println("Relatório do Show:");
