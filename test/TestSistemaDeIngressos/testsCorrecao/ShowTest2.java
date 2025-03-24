@@ -16,7 +16,7 @@ public class ShowTest2 {
         Lote lote = new Lote(10, 50, 0.10);
         show.adicionarLote(lote);
 
-        assertEquals("PREJUÍZO", show.gerarRelatorio(), "O show deve gerar prejuízo sem ingressos vendidos");
+        assertEquals("PREJUIZO", show.gerarRelatorio(), "O show deve gerar prejuízo sem ingressos vendidos");
     }
 
     @Test
@@ -43,7 +43,7 @@ public class ShowTest2 {
             ingresso.setVendido(true);
         }
         show.adicionarLote(lote);
-        assertEquals("PREJUÍZO", show.gerarRelatorio(), "O show deve gerar prejuízo se as despesas superarem a receita");
+        assertEquals("PREJUIZO", show.gerarRelatorio(), "O show deve gerar prejuízo se as despesas superarem a receita");
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ShowTest2 {
             ingresso.setVendido(true);
         }
         show.adicionarLote(lote);
-        assertEquals("PREJUÍZO", show.gerarRelatorio(), "O show deve gerar prejuízo com grandes despesas de infraestrutura");
+        assertEquals("PREJUIZO", show.gerarRelatorio(), "O show deve gerar prejuízo com grandes despesas de infraestrutura");
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ShowTest2 {
             ingresso.setVendido(true);
         }
         show.adicionarLote(lote);
-        assertEquals("ESTÁVEL", show.gerarRelatorio(), "O show deve gerar lucro após a venda dos ingressos");
+        assertEquals("ESTAVEL", show.gerarRelatorio(), "O show deve gerar lucro após a venda dos ingressos");
     }
 }
 
