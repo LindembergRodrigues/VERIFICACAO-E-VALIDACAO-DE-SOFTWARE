@@ -13,20 +13,24 @@ public class ShowTest2 {
     @DisplayName("Testar relatório sem ingressos vendidos com lote zerado")
     void testarRelatorioSemIngressosVendidosC1() {
         Show show = new Show("2025-02-25", "Artista X", 100000, 5000, true);
-        Lote lote = new Lote(0, 50, 0.10);
+        Lote lote = new Lote(10, 50, 0.10);
         show.adicionarLote(lote);
+
         assertEquals("PREJUÍZO", show.gerarRelatorio(), "O show deve gerar prejuízo sem ingressos vendidos");
     }
 
     @Test
     @DisplayName("Testar relatório com ingressos vendidos e verificação de lucro" )
     void testarGerarRelatorioComIngressosVendidosC2() {
-        Show show = new Show("2025-02-25", "Artista Y", 100000, 5000, true);
-        Lote lote = new Lote(100, 50, 0.10);
+        Show show = new Show("2025-02-25", "Artista Y", 1000, 5000, true);
+        Lote lote = new Lote(100, 500, 0.10);
+
+        show.adicionarLote(lote);
+
         for (Ingresso ingresso : lote.getIngressos()) {
             ingresso.setVendido(true);
         }
-        show.adicionarLote(lote);
+
         assertEquals("LUCRO", show.gerarRelatorio(), "O show deve gerar lucro após a venda dos ingressos");
     }
 
@@ -34,7 +38,7 @@ public class ShowTest2 {
     @DisplayName("Testar relatório com prejuízo após venda de ingressos")
     void testarMostrarStatusFinanceiroComPrejuizoC3() {
         Show show = new Show("2025-02-25", "Artista Z", 100000, 5000, true);
-        Lote lote = new Lote(100, 50, 0.30);
+        Lote lote = new Lote(100, 50, 0.25);
         for (Ingresso ingresso : lote.getIngressos()) {
             ingresso.setVendido(true);
         }
@@ -55,15 +59,15 @@ public class ShowTest2 {
     }
 
     @Test
-    @DisplayName("Testar relatório com lucro após venda de ingressos")
+    @DisplayName("Testar relatório com lucro após venda de estavel")
     void testarGerarRelatorioComLucroC5() {
-        Show show = new Show("2025-02-25", "Artista X", 80000, 5000, false);
-        Lote lote = new Lote(300, 50, 0.15);
+        Show show = new Show("2025-02-25", "Artista X", 8000, 1850, false);
+        Lote lote = new Lote(10, 1000, 0.15);
         for (Ingresso ingresso : lote.getIngressos()) {
             ingresso.setVendido(true);
         }
         show.adicionarLote(lote);
-        assertEquals("LUCRO", show.gerarRelatorio(), "O show deve gerar lucro após a venda dos ingressos");
+        assertEquals("ESTÁVEL", show.gerarRelatorio(), "O show deve gerar lucro após a venda dos ingressos");
     }
 }
 

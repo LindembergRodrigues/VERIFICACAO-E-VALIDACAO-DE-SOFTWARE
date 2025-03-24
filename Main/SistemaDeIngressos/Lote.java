@@ -38,7 +38,9 @@ public class Lote {
         }
 
         for (Ingresso ingresso : ingressos) {
-            ingresso.aplicarDesconto(this.desconto);
+            if (ingresso.getTipo() != Tipo.MEIA_ENTRADA) {
+                ingresso.aplicarDesconto(this.desconto);
+            }
         }
     }
 

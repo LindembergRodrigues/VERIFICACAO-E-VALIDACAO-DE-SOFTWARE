@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LoteTest2 {
+public class
+LoteTest2 {
 
     private Lote lote;
 
@@ -65,15 +66,29 @@ public class LoteTest2 {
     @Test
     @DisplayName("Testar criação de lote com quantidade zero")
     void testarCriacaoLoteComQuantidadeZeroc7() {
-        Lote lote = new Lote(0, 50, 0.10);
-        assertEquals(0, lote.getIngressos().size(), "Lote com quantidade zero não deve ter ingressos");
+        Exception qtdZero = assertThrows(IllegalArgumentException.class, () -> {
+            new Lote(0, 50, 0.10);
+        });
+        assertEquals("Quantidade de ingressos deve ser maior que zero.", qtdZero.getMessage());
+    }
+
+    @Test
+    @DisplayName("Testar criação de lote com valor do ingresso negativo")
+    void testarCriacaoLoteComValorNEgativo() {
+        Exception qtdZero = assertThrows(IllegalArgumentException.class, () -> {
+            new Lote(10, -50, 0.10);
+        });
+        assertEquals("Preço do ingresso deve ser maior que zero.", qtdZero.getMessage());
     }
 
     @Test
     @DisplayName("Testar lote com desconto acimad do permitido")
     void testarLoteComDescontoExcedenteC8() {
-        Lote lote2 = new Lote(100, 50, 0.30);
-        assertEquals(75, lote2.getIngressos().get(0).getPreco(), "Desconto maior que 25% deve ser ajustado para 25%");
+
+        Exception lote2 = assertThrows(IllegalArgumentException.class, () -> {
+            new Lote(100, 50, 0.30);
+        });
+        assertEquals("Desconto deve ser entre 0 e 25%.", lote2.getMessage());
     }
 
     @Test
@@ -81,7 +96,7 @@ public class LoteTest2 {
     void testarVendaDeIngressosComDescontoMaximoC9() {
         Lote lote = new Lote(100, 50, 0.25);  // Lote com 25% de desconto
         for (Ingresso ingresso : lote.getIngressos()) {
-            ingresso.setVendido(true);  // Marca todos os ingressos como vendidos
+            ingresso.setVendido(true);
         }
         assertEquals(100, lote.getIngressos().size(), "Todos os ingressos no lote devem ser vendidos");
     }

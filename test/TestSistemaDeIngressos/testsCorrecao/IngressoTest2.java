@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IngressoTest2 {
     private Ingresso ingressoVip;
@@ -36,45 +35,59 @@ public class IngressoTest2 {
     @Test
     @DisplayName("Testar ingresso VIP com desconto com percentual negativo")
     void testValoresLimitesDescontoC3() {
-        ingressoVip.aplicarDesconto(-0.01);
+
+        assertAll("Validações de descontos inválidos",
+                () -> {
+                    Exception exceptionNegativo = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoVip.aplicarDesconto(-0.01);
+                    });
+                    assertEquals("Desconto deve ser entre 0 e 25%.", exceptionNegativo.getMessage());
+                },
+                () -> {
+                    Exception exceptionMaiorQue25 = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoVip.aplicarDesconto(26.00);
+                    });
+                    assertEquals("Desconto deve ser entre 0 e 25%.", exceptionMaiorQue25.getMessage());
+                }
+        );
+
         assertEquals(200.0, ingressoVip.getPreco(), "Desconto negativo não deveria ser aplicado.");
     }
-    @Test
-    @DisplayName("Testar ingresso VIP com desconto com percentual igual a 26%/inválido")
-    void testValoresLimitesDescontoC4() {
-        ingressoVip.aplicarDesconto(0.26);
-        assertEquals(200.0, ingressoVip.getPreco(), "Desconto acima do limite não deve ser aplicado.");
-    }
-    @Test
-    @DisplayName("Testar ingresso MEIA com  desconto com percentual igual a 0(zero)")
-    void testValoresLimitesDescontoC5() {
-        ingressoMeia.aplicarDesconto(0.00);
-        assertEquals(50.0, ingressoMeia.getPreco(), "O preço deveria permanecer o mesmo.");
-    }
+
     @Test
     @DisplayName("Testar ingresso MEIA com desconto com percentual igual a 10%/válido")
     void testValoresLimitesDescontoC6() {
-        ingressoMeia.aplicarDesconto(0.10);
+        assertAll("Validações de descontos inválidos",
+                () -> {
+                    Exception exceptionNegativo = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoMeia.aplicarDesconto(-0.01);
+                    });
+                    assertEquals("Ingresso de meia entrada não pode ter desconto.", exceptionNegativo.getMessage());
+                },
+                () -> {
+                    Exception exceptionMaiorQue25 = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoMeia.aplicarDesconto(26.00);
+                    });
+                    assertEquals("Ingresso de meia entrada não pode ter desconto.", exceptionMaiorQue25.getMessage());
+                },() -> {
+                    Exception exceptionMaiorQue25 = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoMeia.aplicarDesconto(10.00);
+                    });
+                    assertEquals("Ingresso de meia entrada não pode ter desconto.", exceptionMaiorQue25.getMessage());
+                }
+
+        );
+
         assertEquals(50.0, ingressoMeia.getPreco(), "Desconto máximo aplicado corretamente.");
     }
-    @Test
-    @DisplayName("Testar ingresso MEIA com desconto com percentual negativo/Inválido")
-    void testValoresLimitesDescontoC7() {
-        ingressoMeia.aplicarDesconto(-0.01);
-        assertEquals(50.0, ingressoMeia.getPreco(), "Desconto negativo não deve ser aplicado.");
-    }
-    @Test
-    @DisplayName("Testar ingresso MEIA com desconto com percentual igual a 26%/Inválido")
-    void testValoresLimitesDescontoC8() {
-        ingressoMeia.aplicarDesconto(0.26);
-        assertEquals(50.0, ingressoMeia.getPreco(), "Desconto acima do limite não deve ser aplicado.");
-    }
+
     @Test
     @DisplayName("Testar ingresso NORMAL com desconto com percentual igual a 0(zero)")
     void testValoresLimitesDescontoC9() {
         ingressoNormal.aplicarDesconto(0.00);
         assertEquals(100.0, ingressoNormal.getPreco(), "O preço deveria permanecer o mesmo.");
     }
+
     @Test
     @DisplayName("Testar ingresso NORMAL com desconto com percentual igual a 10%/válido")
     void testValoresLimitesDescontoC10() {
@@ -82,29 +95,23 @@ public class IngressoTest2 {
         assertEquals(90.0, ingressoNormal.getPreco(), "Desconto máximo aplicado corretamente.");
     }
     @Test
-    @DisplayName("Testar ingresso NORMAL com desconto com percentual negativo/Inválido")
+    @DisplayName("Testar ingresso NORMAL com desconto com percentual negativo e maior que 25/Inválido")
     void testValoresLimitesDescontoC11() {
-        ingressoNormal.aplicarDesconto(-0.01);
-        assertEquals(100.0, ingressoNormal.getPreco(), "Desconto negativo não deve ser aplicado.");
-    }
-    @Test
-    @DisplayName("Testar ingresso NORMAL com desconto com percentual igual a 26%/Inválido")
-    void testValoresLimitesDescontoC12() {
-        ingressoNormal.aplicarDesconto(0.26);
+        assertAll("Validações de descontos inválidos",
+                () -> {
+                    Exception exceptionNegativo = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoNormal.aplicarDesconto(-0.01);
+                    });
+                    assertEquals("Desconto deve ser entre 0 e 25%.", exceptionNegativo.getMessage());
+                },
+                () -> {
+                    Exception exceptionMaiorQue25 = assertThrows(IllegalArgumentException.class, () -> {
+                        ingressoNormal.aplicarDesconto(26.00);
+                    });
+                    assertEquals("Desconto deve ser entre 0 e 25%.", exceptionMaiorQue25.getMessage());
+                }
+        );
         assertEquals(100.0, ingressoNormal.getPreco(), "Desconto acima do limite não deve ser aplicado.");
-    }
-
-    @Test
-    @DisplayName("Testar desconto de 10% em ingresso NORMAL")
-    void testParticaoEquivalenciaC13() {
-        ingressoNormal.aplicarDesconto(0.10);
-        assertEquals(90.0, ingressoNormal.getPreco(), "Desconto de 10% aplicado corretamente.");
-    }
-    @Test
-    @DisplayName("Testar desconto de 10% em ingresso MEIA/Inválido")
-    void testParticaoEquivalenciaC14() {
-        ingressoMeia.aplicarDesconto(0.10);
-        assertEquals(50.0, ingressoMeia.getPreco(), "Ingresso meia entrada não deve receber desconto.");
     }
 
     @Test
@@ -116,8 +123,10 @@ public class IngressoTest2 {
         ingressoNormal.aplicarDesconto(0.15);
         ingressoNormal.setVendido(true);
 
-        assertTrue(ingressoVip.isVendido());
-        assertTrue(ingressoNormal.isVendido());
+        assertAll("Validação de ingressos vendidos",
+                () -> assertTrue(ingressoVip.isVendido(), "Ingresso VIP deveria estar vendido"),
+                () -> assertTrue(ingressoNormal.isVendido(), "Ingresso Normal deveria estar vendido")
+        );
     }
 
     @Test
@@ -127,8 +136,12 @@ public class IngressoTest2 {
         Ingresso i2 = new Ingresso(Tipo.VIP, Double.MAX_VALUE);
         Ingresso i3 = new Ingresso(Tipo.MEIA_ENTRADA, Double.MIN_VALUE);
 
-        assertEquals(0.01, i1.getPreco());
-        assertEquals(Double.MAX_VALUE, i2.getPreco());
-        assertEquals(Double.MIN_VALUE, i3.getPreco());
+
+        assertAll("Validação de ingressos vendidos",
+                () -> assertEquals(0.01, i1.getPreco()),
+                () -> assertEquals(Double.MAX_VALUE, i2.getPreco()),
+                () -> assertEquals(Double.MIN_VALUE, i3.getPreco())
+        );
+
     }
 }

@@ -70,6 +70,7 @@ public class Show {
         System.out.println("Ingressos vendidos (Normal): " + vendidosNormal);
         System.out.println("Ingressos vendidos (Meia Entrada): " + vendidosMeia);
         System.out.printf("Receita Líquida: R$ %.2f%n", receitaLiquida);
+        System.out.printf("Despesas: R$ %.2f%n", despesasTotais);
         System.out.println("Status Financeiro: " + statusFinanceiro);
         return statusFinanceiro;
     }
