@@ -10,6 +10,15 @@ public class Lote {
     private final double desconto;
 
     public Lote(int quantidade, double precoNormal, double desconto) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade de ingressos deve ser maior que zero.");
+        }
+        if (precoNormal <= 0) {
+            throw new IllegalArgumentException("Preço do ingresso deve ser maior que zero.");
+        }
+        if (desconto < 0.00 || desconto > 0.25) {
+            throw new IllegalArgumentException("Desconto deve ser entre 0 e 25%.");
+        }
         this.id = contador++;
         this.ingressos = new ArrayList<>();
         this.desconto = Math.min(desconto, 0.25);
@@ -28,7 +37,6 @@ public class Lote {
             ingressos.add(new Ingresso(Tipo.NORMAL, precoNormal));
         }
 
-        // Aplica desconto em ingressos VIP e NORMAL
         for (Ingresso ingresso : ingressos) {
             ingresso.aplicarDesconto(this.desconto);
         }
